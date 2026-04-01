@@ -5,7 +5,6 @@ from typing import Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from passlib.context import CryptContext
 from pymongo import MongoClient
 
 from .common_utils import generate_credential_id
@@ -54,28 +53,6 @@ def seed_certificates():
     else:
         logger.info("Certificates collection already has data, skipping seed.")
 
-def seed_users():
-    users = db["users"]
-    if users.count_documents({}) == 0:
-        pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-        fake_users = [
-            {
-                "name": "Admin User",
-                "email": "admin@example.com",
-                "password": pwd_context.hash("1234"),
-                "role": "admin"
-            },
-            {
-                "name": "Regular User",
-                "email": "user@example.com",
-                "password": pwd_context.hash("1234"),
-                "role": "user"
-            }
-        ]
-        users.insert_many(fake_users)
-        logger.info("Inserted sample users: admin@example.com, user@example.com")
-    else:
-        logger.info("Users collection already has data, skipping seed.")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -87,7 +64,6 @@ async def lifespan(app: FastAPI):
 
     seed_signatures()
     seed_certificates()
-    seed_users()
 
     yield
 

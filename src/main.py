@@ -6,7 +6,6 @@ from src.utils import (
     get_certificate_by_credential,
     get_signatures_by_ids,
     lifespan,
-    process_login_request,
     setup_db,
     setup_logging,
 )
@@ -30,11 +29,6 @@ app.add_middleware(
 async def read_root():
     logger.info("Root endpoint '/' was called")
     return {"message": "Hello, Certify!"}
-    
-@app.post("/api/login")
-async def login(request: Request):
-    return await process_login_request(request)
-
 
 @app.get("/api/certificate/{credential_id}")
 async def get_certificate(credential_id: str):
